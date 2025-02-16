@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!currentMenuItem || !wee) return;
 
         const initialOffset = currentMenuItem.offsetLeft;
-        const initialWidth = currentMenuItem.offsetWidth;
 
         // Update wee position on hover
         menuItems.forEach(menuItem => {
@@ -20,9 +19,18 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             menuItem.addEventListener('mouseleave', function() {
-                wee.style.left = '0';
-                wee.style.width = `${initialWidth}px`;
+                let current = document.querySelector('.current-menu-item');
+                wee.style.left = `${current.offsetLeft - initialOffset}px`;
+                wee.style.width = `${current.offsetWidth}px`;
             });
+
+            menuItem.addEventListener('click', function() {
+                const left = menuItem.offsetLeft - initialOffset;
+                const width = menuItem.offsetWidth;
+                wee.style.left = `${left}px`;
+                wee.style.width = `${width}px`;
+            });
+
         });
     }
 
@@ -30,3 +38,22 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('load', updateNav);
     window.addEventListener('resize', updateNav);
 });
+
+// Scroll to target section when an h6 is clicked
+document.querySelectorAll('h6').forEach(item => {
+    item.addEventListener('click', () => {
+        const targetId = item.getAttribute('data-target');
+        const targetElement = document.getElementById(targetId);
+
+        if (targetElement) {
+            document.getElementsByClassName('current-menu-item')[0].classList.remove('current-menu-item');
+            item.parentElement.classList.add('current-menu-item');
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+});
+
+document.querySelectorAll('.pulse')[0].addEventListener('click', () => {
+    document.getElementById('get-unicorns').scrollIntoView({ behavior: 'smooth' });
+})
+
